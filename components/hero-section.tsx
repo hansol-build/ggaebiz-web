@@ -15,12 +15,12 @@ export function HeroSection() {
           Ggaebiz · 깨비즈
         </p>
         <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl md:text-6xl">
-          비즈니스를 더 가볍게,
-          <br className="hidden sm:block" /> 깨비즈와 함께하세요
+          사장님의 하루를 가볍게,
+          <br className="hidden sm:block" /> 매출은 더 단단하게
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground text-pretty sm:text-xl">
-          핵심만 담은 앱으로 일의 흐름을 정리하고, 팀과 고객을 한곳에서
-          연결합니다. 지금 앱스토어에서 만나보세요.
+          주문 받고 정산하고 손님 챙기는 일까지, 깨비즈 앱 하나로 깔끔하게
+          정리해 드립니다.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Link
