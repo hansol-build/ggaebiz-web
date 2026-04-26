@@ -1,44 +1,19 @@
-import Link from "next/link";
-
-import { buttonVariants } from "@/components/ui/button";
-import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-links";
-import { cn } from "@/lib/utils";
-
 export function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative overflow-hidden border-b bg-gradient-to-b from-muted/40 to-background px-4 py-20 sm:py-28"
+      className="px-4 pt-10 pb-4 text-center sm:pt-14 sm:pb-6"
     >
-      <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
-        <p className="mb-4 text-sm font-medium tracking-wide text-muted-foreground uppercase">
-          Ggaebiz · 깨비즈
+      <div className="mx-auto max-w-2xl">
+        <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+          깨비즈 잔소리 번역기
         </p>
-        <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl md:text-6xl">
-          사장님의 하루를 가볍게,
-          <br className="hidden sm:block" /> 매출은 더 단단하게
+        <h1 className="font-heading text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+          잔소리, 제대로 해보자
         </h1>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground text-pretty sm:text-xl">
-          주문 받고 정산하고 손님 챙기는 일까지, 깨비즈 앱 하나로 깔끔하게
-          정리해 드립니다.
+        <p className="mt-3 text-muted-foreground text-pretty">
+          하고 싶은 말을 깨비즈 캐릭터 톤으로 바꿔드립니다.
         </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href={APP_STORE_URL}
-            className={cn(buttonVariants({ size: "lg" }), "min-w-[180px]")}
-          >
-            App Store에서 받기
-          </Link>
-          <Link
-            href={PLAY_STORE_URL}
-            className={cn(
-              buttonVariants({ variant: "outline", size: "lg" }),
-              "min-w-[180px]"
-            )}
-          >
-            Google Play에서 받기
-          </Link>
-        </div>
       </div>
     </section>
   );
