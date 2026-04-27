@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 
 import {
   Carousel,
@@ -13,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CHARACTER_MODES } from "@/lib/characters";
-import { cn } from "@/lib/utils";
 
 const HINT_BUTTONS = [
   { label: "청소 해!", text: "방 좀 치워!" },
@@ -85,14 +85,14 @@ export function TranslatorSection() {
                   <span className="text-xs font-semibold tracking-[0.3em] text-muted-foreground">
                     {c.mbti}
                   </span>
-                  <div
-                    className={cn(
-                      "flex aspect-square w-40 items-center justify-center rounded-2xl text-6xl",
-                      c.bgClass
-                    )}
-                    aria-label={`${c.name} placeholder image`}
-                  >
-                    {c.emoji}
+                  <div className="relative aspect-square w-40 overflow-hidden rounded-2xl">
+                    <Image
+                      src={c.image}
+                      alt={`${c.name} ${c.mode}`}
+                      fill
+                      sizes="160px"
+                      className="object-contain"
+                    />
                   </div>
                   <div className="space-y-1">
                     <p className="text-base font-semibold">{c.mode}</p>
