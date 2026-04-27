@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 
 import {
   Carousel,
@@ -13,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CHARACTER_MODES } from "@/lib/characters";
-import { cn } from "@/lib/utils";
 
 const HINT_BUTTONS = [
   { label: "청소 해!", text: "방 좀 치워!" },
@@ -26,7 +26,8 @@ export function TranslatorSection() {
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [input, setInput] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
-  const [showResult, setShowResult] = React.useState(false);
+  const [translated, setTranslated] = React.useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!api) return;
@@ -40,15 +41,33 @@ export function TranslatorSection() {
 
   const character = CHARACTER_MODES[currentIndex];
 
-  const handleTranslate = () => {
-    if (!input.trim()) return;
-    setShowResult(false);
+  const handleTranslate = async () => {
+    const trimmed = input.trim();
+    if (!trimmed) return;
+    setTranslated(null);
+    setErrorMessage(null);
     setIsLoading(true);
-    // AI API 미정 — 와꾸용 가짜 로딩
-    window.setTimeout(() => {
+    try {
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ characterId: character.id, text: trimmed }),
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        translated?: string;
+        error?: string;
+      };
+      if (!response.ok || !data.translated) {
+        throw new Error(data.error ?? "번역에 실패했어. 잠시 후 다시 시도해줘");
+      }
+      setTranslated(data.translated);
+    } catch (err) {
+      setErrorMessage(
+        err instanceof Error ? err.message : "알 수 없는 오류가 발생했어"
+      );
+    } finally {
       setIsLoading(false);
-      setShowResult(true);
-    }, 700);
+    }
   };
 
   return (
@@ -66,14 +85,14 @@ export function TranslatorSection() {
                   <span className="text-xs font-semibold tracking-[0.3em] text-muted-foreground">
                     {c.mbti}
                   </span>
-                  <div
-                    className={cn(
-                      "flex aspect-square w-40 items-center justify-center rounded-2xl text-6xl",
-                      c.bgClass
-                    )}
-                    aria-label={`${c.name} placeholder image`}
-                  >
-                    {c.emoji}
+                  <div className="relative aspect-square w-40 overflow-hidden rounded-2xl">
+                    <Image
+                      src={c.image}
+                      alt={`${c.name} ${c.mode}`}
+                      fill
+                      sizes="160px"
+                      className="object-contain"
+                    />
                   </div>
                   <div className="space-y-1">
                     <p className="text-base font-semibold">{c.mode}</p>
@@ -119,14 +138,23 @@ export function TranslatorSection() {
           </Button>
         </div>
 
-        {showResult && (
+        {translated && (
           <div className="rounded-2xl border bg-muted/40 p-6">
             <p className="mb-2 text-xs font-semibold tracking-[0.3em] text-muted-foreground">
               {character.mbti} · {character.mode}
             </p>
-            <p className="text-base leading-relaxed text-pretty">
-              [여기에 {character.name} 톤으로 번역된 결과가 표시됩니다]
+            <p className="text-base leading-relaxed text-pretty whitespace-pre-wrap">
+              {translated}
             </p>
+          </div>
+        )}
+
+        {errorMessage && (
+          <div
+            role="alert"
+            className="rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive"
+          >
+            {errorMessage}
           </div>
         )}
       </div>
