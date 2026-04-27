@@ -1,3 +1,4 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/variable/pretendardvariable-dynamic-subset.css");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -7,7 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -46,6 +47,32 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Brand · Orange (Primary) — 500 = #FC6F3D */
+  --color-orange-50: #fff5f0;
+  --color-orange-100: #ffe4d5;
+  --color-orange-200: #ffcab0;
+  --color-orange-300: #ffa980;
+  --color-orange-400: #ff8a55;
+  --color-orange-500: #fc6f3d;
+  --color-orange-600: #e5572a;
+  --color-orange-700: #b83f1c;
+  --color-orange-800: #7e2c12;
+  --color-orange-900: #4d1808;
+
+  /* Brand · Cool Gray */
+  --color-cool-gray-25: #fafbfc;
+  --color-cool-gray-50: #f4f5f7;
+  --color-cool-gray-75: #eceef1;
+  --color-cool-gray-100: #dfe3e8;
+  --color-cool-gray-200: #c9ced4;
+  --color-cool-gray-300: #a8afb7;
+  --color-cool-gray-400: #818892;
+  --color-cool-gray-500: #5f656d;
+  --color-cool-gray-600: #444a52;
+  --color-cool-gray-700: #2d3239;
+  --color-cool-gray-800: #1a1e23;
+  --color-cool-gray-900: #0b0e12;
 }
 
 :root {
@@ -55,8 +82,8 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: var(--color-orange-500);
+  --primary-foreground: var(--color-cool-gray-25);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -90,8 +117,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary: var(--color-orange-400);
+  --primary-foreground: var(--color-cool-gray-900);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
