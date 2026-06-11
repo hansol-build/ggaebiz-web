@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 import {
@@ -11,6 +12,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
+import { CoolMode } from "@/components/ui/cool-mode";
 import { cn } from "@/lib/utils";
 import { CHARACTER_MODES, type CharacterMode } from "@/lib/characters";
 
@@ -22,30 +24,43 @@ const HINT_BUTTONS = [
 
 function CharacterCard({ character }: { character: CharacterMode }) {
   return (
-    <div
+    <motion.div
       className={cn(
         "group/card relative mx-auto select-none",
         "aspect-[5/6] w-full max-w-[280px] sm:max-w-[320px]",
-        "-rotate-[4deg] cursor-pointer",
-        "transition-transform duration-300 ease-out will-change-transform",
-        "hover:-rotate-[6deg] hover:scale-[1.05]"
+        "cursor-pointer rounded-[1.75rem]"
       )}
+      style={{
+        padding: "4px",
+        background: "linear-gradient(135deg, #FE751D, #FFB585)",
+      }}
+      animate={{ y: [0, -15, 0], rotate: [-3, 3, -3] }}
+      transition={{
+        y: { duration: 3.2, repeat: Infinity, ease: "easeInOut" },
+        rotate: { duration: 4.6, repeat: Infinity, ease: "easeInOut" },
+      }}
+      whileHover={{ scale: 1.05, rotate: 0 }}
+      whileTap={{ scale: 0.97, rotate: 0 }}
     >
-      <Image
-        src={character.image}
-        alt={`${character.mbti} ${character.mode}`}
-        fill
-        sizes="(max-width: 640px) 280px, 320px"
-        className="object-contain"
-        priority
-      />
-    </div>
+      <div className="relative h-full w-full overflow-hidden rounded-[1.6rem]">
+        <Image
+          src={character.image}
+          alt={`${character.mbti} ${character.mode}`}
+          fill
+          sizes="(max-width: 640px) 280px, 320px"
+          className="object-contain"
+          priority
+        />
+      </div>
+    </motion.div>
   );
 }
 
 export function TranslatorSection() {
   const [api, setApi] = React.useState<CarouselApi | null>(null);
   const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [dotsVisible, setDotsVisible] = React.useState(false);
+  const dotsTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const [input, setInput] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [translated, setTranslated] = React.useState<string | null>(null);
@@ -54,10 +69,16 @@ export function TranslatorSection() {
   React.useEffect(() => {
     if (!api) return;
     setCurrentIndex(api.selectedScrollSnap());
-    const handler = () => setCurrentIndex(api.selectedScrollSnap());
+    const handler = () => {
+      setCurrentIndex(api.selectedScrollSnap());
+      setDotsVisible(true);
+      if (dotsTimerRef.current) clearTimeout(dotsTimerRef.current);
+      dotsTimerRef.current = setTimeout(() => setDotsVisible(false), 1500);
+    };
     api.on("select", handler);
     return () => {
       api.off("select", handler);
+      if (dotsTimerRef.current) clearTimeout(dotsTimerRef.current);
     };
   }, [api]);
 
@@ -93,8 +114,20 @@ export function TranslatorSection() {
   };
 
   return (
-    <section className="px-4 pb-16 sm:pb-20">
-      <div className="mx-auto flex w-full max-w-xl flex-col items-stretch gap-8 sm:gap-10">
+    <section className="relative px-4 pt-12 pb-16 sm:pt-16 sm:pb-20">
+      {/* 상단 오렌지 그라데이션 배경 */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[480px] sm:h-[560px]"
+        style={{ background: "linear-gradient(135deg, #FE751D, #FFB585)" }}
+      />
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[480px] sm:h-[560px]"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(255,255,255,0) 20%, rgba(255,255,255,1) 85%)",
+        }}
+      />
+      <div className="relative mx-auto flex w-full max-w-xl flex-col items-stretch gap-8 sm:gap-10">
         <div className="relative">
           <Carousel
             setApi={setApi}
@@ -141,7 +174,13 @@ export function TranslatorSection() {
             <ChevronRightIcon className="size-5" />
           </button>
 
-          <div className="mt-1 flex justify-center gap-1.5 sm:hidden">
+          <div
+            className={cn(
+              "mt-1 flex justify-center gap-1.5 sm:hidden",
+              "transition-opacity duration-300",
+              dotsVisible ? "opacity-100" : "opacity-0"
+            )}
+          >
             {CHARACTER_MODES.map((_, idx) => (
               <span
                 key={idx}
@@ -191,19 +230,28 @@ export function TranslatorSection() {
             ))}
           </div>
 
-          <Button
-            type="button"
-            onClick={handleTranslate}
-            disabled={isLoading || !input.trim()}
-            className={cn(
-              "h-14 w-full rounded-2xl text-base font-bold",
-              "bg-orange-500 text-white shadow-[0_8px_20px_-8px_rgba(252,111,61,0.6)]",
-              "hover:bg-orange-600 active:scale-[0.99]",
-              "disabled:bg-orange-200 disabled:text-white disabled:shadow-none"
-            )}
+          <CoolMode
+            options={{
+              particle: "/characters/particle-icon.png",
+              size: 44,
+              particleCount: 10,
+              speedUp: 20,
+            }}
           >
-            {isLoading ? "번역 중…" : `${character.name}톤으로 번역하기`}
-          </Button>
+            <Button
+              type="button"
+              onClick={handleTranslate}
+              disabled={isLoading || !input.trim()}
+              className={cn(
+                "h-14 w-full rounded-2xl text-base font-bold",
+                "bg-orange-500 text-white shadow-[0_8px_20px_-8px_rgba(252,111,61,0.6)]",
+                "hover:bg-orange-600 active:scale-[0.99]",
+                "disabled:bg-orange-200 disabled:text-white disabled:shadow-none"
+              )}
+            >
+              {isLoading ? "번역 중…" : `${character.name}톤으로 번역하기`}
+            </Button>
+          </CoolMode>
         </div>
 
         {translated && (
@@ -229,3 +277,4 @@ export function TranslatorSection() {
     </section>
   );
 }
+
